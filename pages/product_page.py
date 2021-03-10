@@ -13,12 +13,10 @@ class ProductPage(BasePage):
     def get_product_price(self):
         return self.browser.find_element(*ProductPageLocators.PRODUCT_PRICE).text
 
-    def should_be_add_product_message(self, product_name):
-        messages = self.browser.find_elements(*ProductPageLocators.MESSAGES_SUCCESS)
-        assert len(messages) > 0, 'No success messsages'
-        assert any(product_name == message.text for message in messages), f'Product name in basket is wrong or absent, expected {product_name}'
+    def should_be_add_product_message(self, expected_product_name):
+        product_name = self.browser.find_element(*ProductPageLocators.MESSAGE_SUCCESS_ADD_PRODUCT_NAME).text
+        assert expected_product_name == product_name, f"Product name in basket is wrong or absent, expected '{expected_product_name}',got '{product_name}'"
 
-    def should_be_basket_price_messasge(self, price):
-        messages = self.browser.find_elements(*ProductPageLocators.MESSAGES_INFO)
-        assert len(messages) > 0, 'No info messsages'
-        assert any(price == message.text for message in messages), f'Basket price is wrong or absent, expected {price}'
+    def should_be_basket_price_messasge(self, expected_price):
+        price = self.browser.find_element(*ProductPageLocators.MESSAGE_INFO_NEW_BASKET_PRICE).text
+        assert expected_price == price, f"Basket price is wrong or absent, expected '{expected_price}', got '{price}'"

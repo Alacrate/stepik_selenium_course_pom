@@ -37,15 +37,15 @@ def test_guest_cant_see_product_in_basket_opened_from_product_page(browser):
     basket_page.should_be_empty_basket_text()
 
 @pytest.mark.xfail
-@pytest.mark.parametrize('url', ['http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/'])
-def test_guest_cant_see_success_message_after_adding_product_to_basket(browser, url):
+def test_guest_cant_see_success_message_after_adding_product_to_basket(browser):
+    url = 'http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/'
     page = ProductPage(browser, url)
     page.open()
     page.add_to_basket()
     page.should_not_be_success_message()
 
-@pytest.mark.parametrize('url', ['http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/'])
-def test_guest_cant_see_success_message(browser, url):
+def test_guest_cant_see_success_message(browser):
+    url = 'http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/'
     page = ProductPage(browser, url, timeout=0)
     page.open()
     page.should_not_be_success_message()
@@ -57,8 +57,8 @@ def test_guest_should_see_login_link_on_product_page(browser):
     page.should_be_login_link()
 
 @pytest.mark.xfail
-@pytest.mark.parametrize('url', ['http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/'])
-def test_message_disappeared_after_adding_product_to_basket(browser, url):
+def test_message_disappeared_after_adding_product_to_basket(browser):
+    url = 'http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/'
     page = ProductPage(browser, url, timeout=0)
     page.open()
     page.add_to_basket()

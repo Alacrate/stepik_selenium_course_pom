@@ -1,13 +1,45 @@
+import time
+
 import pytest
 
 from .pages.basket_page import BasketPage
 from .pages.login_page import LoginPage
 from .pages.product_page import ProductPage
 
+
+class TestUserAddToBasketFromProductPage:
+
+    @pytest.fixture(scope='function', autouse=True)
+    def setup(self, browser):
+        url = 'http://selenium1py.pythonanywhere.com/accounts/login/'
+        page = LoginPage(browser, url)
+        page.open()
+        email = str(time.time())+'@example999.com'
+        password = 'padfgsssdfgwo6786rd'
+        page.register_new_user(email, password)
+        page.should_be_authorized_user()
+
+    def test_user_cant_see_success_message(self, browser):
+        url = 'http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/'
+        page = ProductPage(browser, url, timeout=0)
+        page.open()
+        page.should_not_be_success_message()
+
+    @pytest.mark.need_review
+    def test_user_can_add_product_to_basket(self, browser):
+        url = 'http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/'
+        page = ProductPage(browser, url)
+        page.open()
+        product_name = page.get_product_name()
+        product_price =  page.get_product_price()
+        page.add_to_basket()
+        page.should_be_add_product_message(product_name)
+        page.should_be_basket_price_messasge(product_price)
+
 urls = [f'http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer{i}' for i in range(10)]
 urls[7] = (pytest.param(urls[7], marks=pytest.mark.xfail(reason='offer7 is bugged'))) # type: ignore
 
-@pytest.mark.skip
+@pytest.mark.need_review
 @pytest.mark.parametrize('url', urls)
 def test_guest_can_add_product_to_basket(browser, url):
     page = ProductPage(browser, url)
@@ -19,6 +51,7 @@ def test_guest_can_add_product_to_basket(browser, url):
     page.should_be_add_product_message(product_name)
     page.should_be_basket_price_messasge(product_price)
 
+@pytest.mark.need_review
 def test_guest_can_go_to_login_page_from_product_page(browser):
     url = "http://selenium1py.pythonanywhere.com/en-gb/catalogue/the-city-and-the-stars_95/"
     page = ProductPage(browser, url)
@@ -27,6 +60,7 @@ def test_guest_can_go_to_login_page_from_product_page(browser):
     login_page = LoginPage(browser, browser.current_url)
     login_page.should_be_login_page()
 
+@pytest.mark.need_review
 def test_guest_cant_see_product_in_basket_opened_from_product_page(browser):
     url = 'http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/'
     page = ProductPage(browser, url)
